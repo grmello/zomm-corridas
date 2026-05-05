@@ -317,6 +317,24 @@
     display: none;
   }
 
+
+  .campo select {
+    width: 100%;
+    background: var(--cinza-bg);
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--azul-escuro);
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .campo select:focus { border-color: var(--azul); }
+  .campo select option { background: white; color: var(--azul-escuro); }
+
   /* LINHA VERMELHA DECORATIVA */
   .linha-vermelha {
     height: 3px;
@@ -347,8 +365,34 @@
         <input type="text" id="nome" placeholder="Ex: João Silva" autocomplete="off">
       </div>
       <div class="campo">
-        <label>Destino</label>
-        <input type="text" id="destino" placeholder="Para onde você vai?" autocomplete="off">
+        <label>Destino — Escolha o bairro</label>
+        <select id="destino">
+          <option value="">Selecione o bairro de destino...</option>
+          <option value="Centro|Guararema|SP|-23.4158|-46.0336">Centro — Guararema</option>
+          <option value="Nogueira|Guararema|SP|-23.4075|-46.0311">Nogueira — Guararema</option>
+          <option value="Ipiranga|Guararema|SP|-23.4242|-46.0450">Ipiranga — Guararema</option>
+          <option value="Itapema|Guararema|SP|-23.3931|-46.0158">Itapema — Guararema</option>
+          <option value="Vale dos Eucaliptos|Guararema|SP|-23.4111|-46.0189">Vale dos Eucaliptos — Guararema</option>
+          <option value="Ajuda|Guararema|SP|-23.4358|-46.0125">Ajuda — Guararema</option>
+          <option value="Itaoca|Guararema|SP|-23.4472|-46.0528">Itaoca — Guararema</option>
+          <option value="Estância Guararema|Guararema|SP|-23.3853|-46.0350">Estância Guararema</option>
+          <option value="Luiz Carlos|Guararema|SP|-23.4303|-46.1136">Luiz Carlos — Guararema</option>
+          <option value="Fazenda Palao (Alpes)|Guararema|SP|-23.3644|-46.0114">Fazenda Palao (Alpes) — Guararema</option>
+          <option value="Jardim Itapema|Guararema|SP|-23.3915|-46.0130">Jardim Itapema — Guararema</option>
+          <option value="Freguesia da Escada|Guararema|SP|-23.3764|-45.9961">Freguesia da Escada — Guararema</option>
+          <option value="Loteamento Valparaiba|Guararema|SP|-23.4012|-46.0285">Loteamento Valparaiba — Guararema</option>
+          <option value="Nova Guanabara|Guararema|SP|-23.4190|-46.0620">Nova Guanabara — Guararema</option>
+          <option value="Jardim Luiza|Guararema|SP|-23.4215|-46.0388">Jardim Luiza — Guararema</option>
+          <option value="Chácaras Guanabara|Guararema|SP|-23.4135|-46.0680">Chácaras Guanabara — Guararema</option>
+          <option value="Goiabal|Jacareí|SP|-23.3514|-45.9811">Goiabal — Jacareí</option>
+          <option value="Santa Branca|Santa Branca|SP|-23.3956|-45.8825">Santa Branca</option>
+          <option value="Parque Agrinco|Guararema|SP|-23.4036|-46.0714">Parque Agrinco — Guararema</option>
+          <option value="Paião|Guararema|SP|-23.3610|-46.0085">Paião — Guararema</option>
+          <option value="Lambari|Guararema|SP|-23.4422|-46.0950">Lambari — Guararema</option>
+          <option value="Bellard|Guararema|SP|-23.4105|-46.0512">Bellard — Guararema</option>
+          <option value="Recanto Imperial|Santa Isabel|SP|-23.3142|-46.2231">Recanto Imperial — Santa Isabel</option>
+          <option value="São Silvestre|Jacareí|SP|-23.3447|-46.0136">São Silvestre — Jacareí</option>
+        </select>
       </div>
       <div class="campo">
         <label>Telefone (opcional)</label>
@@ -506,20 +550,32 @@
     mostrarTela('tela-form');
   }
 
-  async function solicitarCorrida() {
-    const nome    = document.getElementById('nome').value.trim();
-    const destino = document.getElementById('destino').value.trim();
-    const tel     = document.getElementById('telefone').value.trim();
-    const erroEl  = document.getElementById('erro-form');
+    async function solicitarCorrida() {
+    const nome     = document.getElementById('nome').value.trim();
+    const destinoEl = document.getElementById('destino');
+    const destinoVal = destinoEl.value;
+    const tel      = document.getElementById('telefone').value.trim();
+    const erroEl   = document.getElementById('erro-form');
 
-    if (!nome || !destino) {
-      erroEl.textContent = 'Por favor, preencha seu nome e o destino.';
+    if (!nome || !destinoVal) {
+      erroEl.textContent = 'Por favor, preencha seu nome e selecione o destino.';
       erroEl.style.display = 'block';
       return;
     }
     erroEl.style.display = 'none';
     document.getElementById('btn-solicitar').disabled = true;
     state.sessionId = gerarSessionId();
+
+    // Parseia o valor do select: "bairro|cidade|estado|lat|lng"
+    const partes = destinoVal.split('|');
+    const destObj = {
+      bairro:  partes[0],
+      cidade:  partes[1],
+      estado:  partes[2],
+      lat:     parseFloat(partes[3]),
+      lng:     parseFloat(partes[4]),
+      endereco: partes[0] + ' - ' + partes[1] + '/' + partes[2]
+    };
 
     try {
       const resp = await fetch(CONFIG.N8N_WEBHOOK_URL, {
@@ -530,7 +586,7 @@
           kiosk_id:   CONFIG.KIOSK_ID,
           passageiro: { nome, telefone: tel || null },
           origem:     CONFIG.ORIGEM,
-          destino
+          destino:    destObj
         })
       });
       if (!resp.ok) throw new Error();
