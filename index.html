@@ -10,114 +10,130 @@
     --azul:       #1a237e;
     --azul-escuro:#0d1554;
     --vermelho:   #e53935;
-    --vermelho-escuro: #b71c1c;
     --branco:     #ffffff;
     --cinza-bg:   #f4f5f9;
-    --cinza-card: #ffffff;
     --cinza-borda:#dde1ee;
     --cinza-texto:#5a6282;
     --verde:      #2e7d32;
-    --laranja:    #e65100;
     --sombra:     0 4px 24px rgba(26,35,126,0.10);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'DM Sans', sans-serif; background-color: var(--cinza-bg); color: var(--azul-escuro); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-  .container { width: 100%; max-width: 450px; padding: 20px; }
-  .screen { display: none; background: var(--branco); padding: 40px; border-radius: 24px; box-shadow: var(--sombra); text-align: center; border: 1px solid var(--cinza-borda); }
+  body { font-family: 'DM Sans', sans-serif; background-color: var(--cinza-bg); color: var(--azul-escuro); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+  
+  .container { width: 100%; max-width: 500px; }
+  .screen { display: none; background: var(--branco); padding: 40px; border-radius: 24px; box-shadow: var(--sombra); border: 1px solid var(--cinza-borda); }
   .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
+  
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; margin-bottom: 20px; color: var(--azul); text-align: center; }
   
-  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; margin-bottom: 12px; color: var(--azul); }
-  p { color: var(--cinza-texto); margin-bottom: 30px; line-height: 1.5; }
-  
-  .btn { display: block; width: 100%; padding: 18px; border: none; border-radius: 14px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Syne', sans-serif; margin-bottom: 15px; }
+  .form-group { margin-bottom: 12px; text-align: left; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--azul-escuro); text-transform: uppercase; }
+  input { width: 100%; padding: 12px 15px; border: 1px solid var(--cinza-borda); border-radius: 10px; font-family: inherit; font-size: 15px; outline: none; }
+  input:focus { border-color: var(--azul); }
+
+  .btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Syne', sans-serif; margin-top: 10px; }
   .btn-primary { background-color: var(--azul); color: var(--branco); }
-  .btn-primary:active { transform: scale(0.98); background-color: var(--azul-escuro); }
-  .btn-outline { background: transparent; border: 2px solid var(--cinza-borda); color: var(--cinza-texto); }
-  
+  .btn-primary:disabled { background-color: #ccc; cursor: not-allowed; }
+  .btn-outline { background: transparent; border: 2px solid var(--cinza-borda); color: var(--cinza-texto); margin-top: 20px; }
+
   .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--azul); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   
-  .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; margin-bottom: 20px; background: #e8eaf6; color: var(--azul); }
-  .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--cinza-borda); text-align: left; }
-  .result-label { color: var(--cinza-texto); font-size: 14px; }
-  .result-value { font-weight: 600; color: var(--azul-escuro); }
+  .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--cinza-borda); }
+  .result-label { color: var(--cinza-texto); }
+  .result-value { font-weight: 600; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- TELA 1: INICIAL -->
   <div id="tela-inicial" class="screen active">
-    <h1>Zomm Brasil</h1>
-    <p>Toque no botão abaixo para solicitar um motorista agora mesmo.</p>
-    <button class="btn btn-primary" onclick="enviarSolicitacao()">SOLICITAR CORRIDA</button>
+    <h1>Solicitar Corrida</h1>
+    
+    <div class="form-group">
+      <label>Nome do Passageiro</label>
+      <input type="text" id="pass-nome" placeholder="Nome completo">
+    </div>
+
+    <div class="form-group">
+      <label>Telefone / WhatsApp</label>
+      <input type="tel" id="pass-fone" placeholder="(00) 00000-0000">
+    </div>
+
+    <div class="form-group">
+      <label>Rua de Destino</label>
+      <input type="text" id="destino-rua" placeholder="Ex: Av. Brasil, 123">
+    </div>
+
+    <div class="form-group">
+      <label>Bairro</label>
+      <input type="text" id="destino-bairro" placeholder="Bairro">
+    </div>
+
+    <div class="form-group">
+      <label>Cidade</label>
+      <input type="text" id="destino-cidade" value="Guararema">
+    </div>
+
+    <button class="btn btn-primary" id="btn-solicitar" onclick="enviarSolicitacao()">SOLICITAR AGORA</button>
   </div>
 
-  <!-- TELA 2: AGUARDANDO -->
   <div id="tela-aguardando" class="screen">
     <div class="loader"></div>
-    <h1>Buscando...</h1>
-    <p>Estamos localizando o motorista mais próximo para você.</p>
-    <div class="status-badge" id="status-texto">Aguardando aceite</div>
-    <button class="btn btn-outline" onclick="confirmarCancelamento()">Cancelar</button>
+    <h1>Buscando Motorista...</h1>
+    <p style="text-align:center; color: var(--cinza-texto);">Estamos enviando seu pedido aos motoristas próximos. Por favor, aguarde.</p>
+    <button class="btn btn-outline" onclick="location.reload()">CANCELAR PEDIDO</button>
   </div>
 
-  <!-- TELA 3: RESULTADO -->
   <div id="tela-resultado" class="screen">
-    <div style="color: var(--verde); font-size: 48px; margin-bottom: 10px;">✓</div>
-    <h1>Motorista à Caminho!</h1>
-    <p>Seu veículo já foi confirmado.</p>
-    
-    <div class="result-row">
-      <span class="result-label">Motorista</span>
-      <span class="result-value" id="res-motorista">...</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Veículo</span>
-      <span class="result-value" id="res-veiculo">...</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Placa</span>
-      <span class="result-value" id="res-placa">...</span>
-    </div>
-    
-    <button class="btn btn-primary" style="margin-top: 30px;" onclick="location.reload()">NOVA SOLICITAÇÃO</button>
-  </div>
-
-  <!-- TELA 4: ERRO -->
-  <div id="tela-erro" class="screen">
-    <div style="color: var(--vermelho); font-size: 48px; margin-bottom: 10px;">✕</div>
-    <h1>Ops!</h1>
-    <p id="msg-erro">Não foi possível completar sua solicitação no momento.</p>
-    <button class="btn btn-primary" onclick="location.reload()">TENTAR NOVAMENTE</button>
+    <h1 style="color: var(--verde)">Motorista Aceitou!</h1>
+    <div class="result-row"><span class="result-label">Motorista:</span><span class="result-value" id="res-motorista"></span></div>
+    <div class="result-row"><span class="result-label">Veículo:</span><span class="result-value" id="res-veiculo"></span></div>
+    <div class="result-row"><span class="result-label">Placa:</span><span class="result-value" id="res-placa"></span></div>
+    <button class="btn btn-primary" style="margin-top:20px" onclick="location.reload()">NOVA CORRIDA</button>
   </div>
 </div>
 
 <script>
-  // CONFIGURAÇÃO DOS WEBHOOKS N8N
   const CONFIG = {
     N8N_WEBHOOK_URL: 'https://fatbarracuda-n8n.cloudfy.live/webhook/zomm-solicitar',
-    N8N_STATUS_URL:  'https://fatbarracuda-n8n.cloudfy.live/webhook/zomm-status',
-    N8N_CANCELAR_URL: 'https://fatbarracuda-n8n.cloudfy.live/webhook/zomm-cancelar'
+    N8N_STATUS_URL:  'https://fatbarracuda-n8n.cloudfy.live/webhook/zomm-status'
   };
 
   let sessionId = null;
   let pollingTimer = null;
 
   async function enviarSolicitacao() {
-    sessionId = 'TOTEM_' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    mostrarTela('tela-aguardando');
+    const btn = document.getElementById('btn-solicitar');
+    
+    // Validação básica
+    if(!document.getElementById('pass-nome').value || !document.getElementById('pass-fone').value) {
+        alert('Por favor, preencha seu nome e telefone.');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando Pedido...';
+
+    sessionId = 'SESS_' + Date.now() + Math.floor(Math.random() * 1000);
 
     const payload = {
       session_id: sessionId,
-      origem: "Totem Principal",
-      timestamp: new Date().toISOString()
+      passageiro: { 
+          nome: document.getElementById('pass-nome').value,
+          telefone: document.getElementById('pass-fone').value 
+      },
+      destino: {
+        endereco: document.getElementById('destino-rua').value,
+        bairro: document.getElementById('destino-bairro').value,
+        cidade: document.getElementById('destino-cidade').value
+      }
     };
 
     try {
-      // CORREÇÃO: Adicionado method: 'POST' e headers JSON para evitar Erro 405
       const response = await fetch(CONFIG.N8N_WEBHOOK_URL, {
         method: 'POST',
         mode: 'cors',
@@ -128,83 +144,39 @@
         body: JSON.stringify(payload)
       });
 
-      if (response.ok) {
-        iniciarPolling();
-      } else {
-        throw new Error('Falha no servidor');
-      }
+      if (!response.ok) throw new Error();
+
+      mostrarTela('tela-aguardando');
+      iniciarPolling();
+
     } catch (error) {
-      console.error('Erro:', error);
-      document.getElementById('msg-erro').textContent = "Erro ao conectar com o servidor. Verifique a rede.";
-      mostrarTela('tela-erro');
+      alert('Erro ao conectar. Verifique o servidor n8n.');
+      btn.disabled = false;
+      btn.textContent = 'SOLICITAR AGORA';
     }
   }
 
   function iniciarPolling() {
-    if (pollingTimer) clearInterval(pollingTimer);
-    pollingTimer = setInterval(verificarStatus, 3000); // Checa a cada 3 segundos
-  }
-
-  function pararPolling() {
-    if (pollingTimer) clearInterval(pollingTimer);
-  }
-
-  async function verificarStatus() {
-    try {
-      const urlStatus = `${CONFIG.N8N_STATUS_URL}?session_id=${sessionId}&t=${Date.now()}`;
-      
-      const response = await fetch(urlStatus, { 
-        method: 'GET',
-        mode: 'cors'
-      });
-      
-      const data = await response.json();
-
-      if (data.status === 'aceito' || data.status === 'em_curso') {
-        pararPolling();
-        mostrarResultado(data.dados);
-      } else if (data.status === 'cancelado' || data.status === 'sem_motorista') {
-        pararPolling();
-        mostrarTela('tela-erro');
-      }
-    } catch (e) {
-      console.warn('Tentando reconectar status...', e);
-    }
+    pollingTimer = setInterval(async () => {
+      try {
+        const res = await fetch(`${CONFIG.N8N_STATUS_URL}?session_id=${sessionId}&t=${Date.now()}`);
+        const data = await res.json();
+        
+        if (data.status === 'aceito' || data.status === 'em_curso') {
+          clearInterval(pollingTimer);
+          document.getElementById('res-motorista').textContent = data.dados.nome_condutor || 'Confirmado';
+          document.getElementById('res-veiculo').textContent = data.dados.veiculo || '—';
+          document.getElementById('res-placa').textContent = data.dados.placa_veiculo || '—';
+          mostrarTela('tela-resultado');
+        }
+      } catch (e) { console.warn("Erro ao checar status..."); }
+    }, 5000);
   }
 
   function mostrarTela(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
-
-  function mostrarResultado(dados) {
-    if(!dados) return;
-    document.getElementById('res-motorista').textContent = dados.nome_condutor || '—';
-    document.getElementById('res-veiculo').textContent   = dados.veiculo || '—';
-    document.getElementById('res-placa').textContent     = dados.placa_veiculo || '—';
-    mostrarTela('tela-resultado');
-  }
-
-  function confirmarCancelamento() {
-    if (!confirm('Deseja realmente cancelar a solicitação?')) return;
-    cancelarCorrida();
-  }
-
-  async function cancelarCorrida() {
-    pararPolling();
-    try {
-      await fetch(CONFIG.N8N_CANCELAR_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId })
-      });
-      location.reload();
-    } catch (e) {
-      location.reload();
-    }
-  }
 </script>
-
 </body>
 </html>
