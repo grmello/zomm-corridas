@@ -109,52 +109,43 @@
   async function enviarSolicitacao() {
     const btn = document.getElementById('btn-solicitar');
     
-    // Validação básica
-    if(!document.getElementById('pass-nome').value || !document.getElementById('pass-fone').value) {
-        alert('Por favor, preencha seu nome e telefone.');
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Enviando Pedido...';
-
-    sessionId = 'SESS_' + Date.now() + Math.floor(Math.random() * 1000);
-
-    const payload = {
-      session_id: sessionId,
-      passageiro: { 
-          nome: document.getElementById('pass-nome').value,
-          telefone: document.getElementById('pass-fone').value 
-      },
-      destino: {
-        endereco: document.getElementById('destino-rua').value,
-        bairro: document.getElementById('destino-bairro').value,
-        cidade: document.getElementById('destino-cidade').value
-      }
+    // Pegar os valores exatamente como estão no seu formulário
+    const dadosParaEnviar = {
+        session_id: 'SESS_' + Date.now(),
+        passageiro: {
+            nome: document.getElementById('pass-nome').value,
+            telefone: document.getElementById('pass-fone').value
+        },
+        destino: {
+            rua: document.getElementById('destino-rua').value,
+            bairro: document.getElementById('destino-bairro').value,
+            cidade: document.getElementById('destino-cidade').value
+        }
     };
 
+    console.log("Tentando enviar:", dadosParaEnviar);
+
     try {
-      const response = await fetch(CONFIG.N8N_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+        const response = await fetch('https://fatbarracuda-n8n.cloudfy.live/webhook/zomm-solicitar', {
+            method: 'POST',
+            // ESTA PARTE É CRUCIAL PARA O N8N NÃO RECEBER VAZIO:
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosParaEnviar)
+        });
 
-      if (!response.ok) throw new Error();
-
-      mostrarTela('tela-aguardando');
-      iniciarPolling();
-
+        if (response.ok) {
+            console.log("O n8n recebeu!");
+            mostrarTela('tela-aguardando');
+        } else {
+            console.error("O n8n respondeu com erro:", response.status);
+        }
     } catch (error) {
-      alert('Erro ao conectar. Verifique o servidor n8n.');
-      btn.disabled = false;
-      btn.textContent = 'SOLICITAR AGORA';
+        console.error("Erro na tentativa de envio:", error);
     }
-  }
+}
 
   function iniciarPolling() {
     pollingTimer = setInterval(async () => {
